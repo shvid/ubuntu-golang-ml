@@ -7,12 +7,12 @@ RUN apt-get update && \
     apt-get autoclean && \
     apt-get -y install git locales wget && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    echo "Download Tensorflow" && \
+    echo "Download Tensorflow ${TF_VER}" && \
     wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-1.14.0.tar.gz && \
     tar -C /usr/local -xzf tensorflow-cpu-${TF_VER}-${TF_TS}.tar.gz && \
     mv tensorflow-cpu-${TF_VER}-${TF_TS}.tar.gz tensorflow-cpu.tar.gz
     
-RUN echo "Download GoLang" && \
+RUN echo "Download GoLang ${GO_VER}" && \
     wget -q https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go${GO_VER}.linux-amd64.tar.gz && \
     rm -f go${GO_VER}.linux-amd64.tar.gz
@@ -120,7 +120,7 @@ RUN go get \
   golang.org/x/text/unicode/rangetable \
   golang.org/x/text/unicode/runenames \
   golang.org/x/text/width && \
-  echo "Build Tensorflow Go" && \
+  echo "Build Tensorflow Go ${TF_VER}" && \
   go get -d github.com/tensorflow/tensorflow/tensorflow/go && \
     cd ${GOPATH}/src/github.com/tensorflow/tensorflow && \
     git checkout tags/v${TF_VER} && \
