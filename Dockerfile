@@ -1,16 +1,23 @@
 FROM ubuntu:18.04
 MAINTAINER Alex Shvid <alex@shvid.com>
 ARG GO_VER
+ARG TF_VER
 
-RUN apt-get update && apt-get install -y git locales wget && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-ENV LANG en_US.utf8
-
+RUN apt-get update && \
+    apt-get autoclean && \
+    apt-get -y install git locales wget && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    echo "Download Tensorflow" && \
+    wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-1.14.0.tar.gz && \
+    tar -C /usr/local -xzf tensorflow-cpu-${TF_VER}-${TF_TS}.tar.gz && \
+    mv tensorflow-cpu-${TF_VER}-${TF_TS}.tar.gz tensorflow-cpu.tar.gz
+    
 RUN echo "Download GoLang" && \
     wget -q https://dl.google.com/go/go${GO_VER}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go${GO_VER}.linux-amd64.tar.gz && \
-    rm go${GO_VER}.linux-amd64.tar.gz
+    rm -f go${GO_VER}.linux-amd64.tar.gz
 
+ENV LANG=en_US.utf8
 ENV GOROOT=/usr/local/go/
 ENV PATH=$PATH:$GOROOT/bin
 ENV GOPATH=/go
@@ -112,4 +119,10 @@ RUN go get \
   golang.org/x/text/unicode/norm \
   golang.org/x/text/unicode/rangetable \
   golang.org/x/text/unicode/runenames \
-  golang.org/x/text/width
+  golang.org/x/text/width && \
+  echo "Build Tensorflow Go" && \
+  go get -d github.com/tensorflow/tensorflow/tensorflow/go && \
+    cd ${GOPATH}/src/github.com/tensorflow/tensorflow && \
+    git checkout tags/v${TF_VER} && \
+    go test github.com/tensorflow/tensorflow/tensorflow/go
+    
