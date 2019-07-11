@@ -8,7 +8,7 @@
 GO_VER := 1.12.7
 TF_VER := 1.14.0
 
-IMAGE := ubuntu-golang
+IMAGE := ubuntu-golang-ml
 VERSION := $(GO_VER)-$(TF_VER)-$(shell git describe --tags --always --dirty)
 REGISTRY := shvid
 
